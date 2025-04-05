@@ -23,10 +23,23 @@ class Unit(models.Model):
         return self.name
     
 class PDFSubmission(models.Model):
+
+    class SubmissionStatus(models.TextChoices):
+        PENDING= 'PENDING', 'Pending'
+        IN_BRIGADE ='IN_BRIGADE', 'In Brigade'
+        IN_HQ = 'IN_HQ', 'In HQ'
+        COMPLETED ='COMPLETED', 'Completed'
+
+
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     date = models.DateField()
     file = models.FileField(upload_to='unit_pdfs/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=SubmissionStatus.choices,
+        default = SubmissionStatus.PENDING,
+    )
 
     def __str__(self):
         return f"Submission by {self.unit.name} on {self.date}"
